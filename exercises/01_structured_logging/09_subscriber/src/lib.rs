@@ -6,34 +6,34 @@
 //! # `Subscriber`
 //!
 //! To see `tracing` in action we've already had to play with different processors:
-//! interpolated text to the console, JSON, OpenTelemetry.  
+//! interpolated text to the console, JSON, OpenTelemetry.
 //!
 //! They are all examples of `tracing` **subscribers**—i.e. implementors of the
 //! [`Subscriber`](https://docs.rs/tracing/latest/tracing/subscriber/trait.Subscriber.html)
-//! trait.  
+//! trait.
 //!
 //! A subscriber is **much more complex** than what we have previously seen in this workshop,
-//! the `Record` trait from the `log` crate.  
+//! the `Record` trait from the `log` crate.
 //! `tracing` offers a richer data model, therefore pushing more responsibilities to the subscriber.
 //! For example: each span has to be assigned a unique ID, which is used to link spans together in a
-//! hierarchical structure.  
+//! hierarchical structure.
 //! Complexity is further compounded by the fact that `tracing` is designed to be extremely
 //! low-overhead, to maximise its applicability in production environments.
 //!
 //! ## `Registry`
 //!
-//! It's rare to find yourself implementing the `Subscriber` trait from scratch.  
+//! It's rare to find yourself implementing the `Subscriber` trait from scratch.
 //! More often than not, you'll rely on [`Registry`](https://docs.rs/tracing_subscriber/latest/tracing_subscriber/registry/struct.Registry.html)
-//! as your foundation.  
+//! as your foundation.
 //! It takes care of all the complicated bits (e.g. span ID generation and management) and
 //! exposes a simple(r) interface for you to implement: the
 //! [`Layer`](https://docs.rs/tracing_subscriber/latest/tracing_subscriber/layer/trait.Layer.html) trait.
 //!
 //! ## `Layer`
 //!
-//! Even better: you don't even have to implement `Layer` yourself (unless you want to).  
+//! Even better: you don't even have to implement `Layer` yourself (unless you want to).
 //! You can **combine** multiple layers together using the `with` method exposed by
-//! the `SubscriberExt` trait.  
+//! the `SubscriberExt` trait.
 //! You just stack multiple layers from the ecosystem on top of each other,
 //! downstream of a `Registry`, and you're good to go.
 //!
@@ -48,7 +48,7 @@
 //! You can look at the subscribers we built in the previous exercises for inspiration!
 mod subscriber;
 
-pub use subscriber::init_test_subscriber;
+pub use crate::subscriber::init_test_subscriber;
 use tracing::{instrument, Span};
 
 /// Given a list of order numbers, compute the total price.

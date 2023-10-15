@@ -52,7 +52,12 @@ impl log::Log for FilteredLogger {
         //
         // Check if we have a module-specific filter for this record, otherwise use the
         // default one.
-        todo!()
+        // Level <= LevelFilter
+        if let Some(module_filter) = self.module_filters.get(metadata.target()) {
+          metadata.level() <= *module_filter
+        } else {
+          metadata.level() <= self.default_level_filter
+        }
     }
 
     fn log(&self, record: &Record) {

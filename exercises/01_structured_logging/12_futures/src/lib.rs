@@ -40,7 +40,7 @@
 //!   multi-threaded **work-stealing**. The next time a future is polled, it may be
 //!   **on a different thread**.
 //!   This model comes with some advantages: you don't need to worry too much about balancing your
-//!   work across threads, the runtime will transparently take care of it for you.  
+//!   work across threads, the runtime will transparently take care of it for you.
 //!   It also introduces some challenges: you can't rely on thread-local state to keep track of
 //!   values that the future cares about, because the next it's polled it may be on a different
 //!   thread where that state is not available (or it's set to a different value).
@@ -48,10 +48,10 @@
 //! # `Instrumented`
 //!
 //! As much as possible, we want our instrumentation code to behave correctly no matter what runtime
-//! our code is being executed on.  
+//! our code is being executed on.
 //! Let's assume that a future is a unit of work we want to track. We want to know how much time
 //! it is spent doing work (i.e. inside `poll`), as well as how long it takes in terms of wall
-//! clock time.  
+//! clock time.
 //! Based on what we discussed so far, it follows that:
 //!
 //! - Any `tracing`-specific state that is associated to our future (i.e. its span handle)
@@ -106,6 +106,7 @@ pub async fn do_something(id: u16) {
 mod tests {
     use super::init_test_subscriber;
     use crate::do_something;
+    use tracing::Instrument;
 
     #[tokio::test]
     /// We spawn a bunch of futures and check that we don't have any cross-task interference
@@ -120,8 +121,7 @@ mod tests {
         for i in 0..n_futures {
             let future = do_something(i);
             let span = tracing::info_span!("Task", caller_id = tracing::field::Empty);
-            // TODO: attach the span to the future!
-            join_set.spawn(future);
+            join_set.spawn(future.instrument(span));
         }
         // Let's wait for all tasks to complete.
         while let Some(_) = join_set.join_next().await {}
